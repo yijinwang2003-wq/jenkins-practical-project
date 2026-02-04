@@ -1,9 +1,4 @@
-INSERT INTO products (name, description, price, stock_quantity) VALUES 
-('Laptop', 'High performance computer', 999.99, 50),
-('Smartphone', 'Latest model with dual camera', 699.00, 100),
-('Monitor', '27-inch 4K display', 299.50, 30);
-
-
-INSERT INTO order_items (product_id, quantity) VALUES 
-(1, 2),
-(2, 5);
+INSERT INTO inventory (item_name, quantity, price) VALUES 
+('Office Chair', 25, 120.50),
+('Mechanical Keyboard', 40, 85.00),
+('USB-C Docking Station', 15, 199.99);

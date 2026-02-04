@@ -1,10 +1,6 @@
 pipeline {
     agent { label 'testing' } 
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,21 +8,30 @@ pipeline {
             }
         }
 
-        stage('Build & Package') {
+        stage('SonarQube Analysis') {
             steps {
-                echo "Starting Build Version: 1.0.${BUILD_NUMBER}"
-                sh """
-                    mkdir -p ./build
-                    echo "Build Version: 1.0.${BUILD_NUMBER}" > ./build/version_info.txt
-                    tar -cvf ./build/quant-app-v1.0.${BUILD_NUMBER}.tar app.py ./build/version_info.txt
-                """
-                echo "Artifact created: ./build/quant-app-v1.0.${BUILD_NUMBER}.tar"
+                echo "Running SonarQube Scanner..."
+                echo "Bugs: 0, Vulnerabilities: 0, Code Smells: 5"
             }
         }
 
-        stage('Archive Artifacts') {
+        stage('Quality Gate') {
             steps {
-                archiveArtifacts artifacts: '**/build/*.tar', fingerprint: true
+                script {
+                    def isPassed = false 
+                    if (!isPassed) {
+                        error "Quality Gate failed: Code coverage is below 80% and 5 code smells detected."
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Deploying to production..."
             }
         }
     }

@@ -1,37 +1,27 @@
 pipeline {
     agent { label 'testing' } 
-
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
         stage('SonarQube Analysis') {
             steps {
-                echo "Running SonarQube Scanner..."
-                echo "Bugs: 0, Vulnerabilities: 0, Code Smells: 5"
+                echo "Analyzing code quality for practical-multibranch-project..."
+                echo "Reliability Rating: C (Threshold: A)"
             }
         }
-
         stage('Quality Gate') {
             steps {
                 script {
-                    def isPassed = false 
-                    if (!isPassed) {
-                        error "Quality Gate failed: Code coverage is below 80% and 5 code smells detected."
-                    }
+                    error "FAILED: Quality Gate 'Practical_Project_Quality_Gate' failed. Reliability Rating is C. Status: RED."
                 }
             }
         }
-        
         stage('Deploy') {
-            when {
-                branch 'main'
-            }
             steps {
-                echo "Deploying to production..."
+                echo "Deployment blocked due to quality standards."
             }
         }
     }

@@ -31,7 +31,7 @@ pipeline {
         stage('End-to-End Testing') {
             steps {
                 echo "Running Playwright E2E Tests..."
-                sh "pytest --html=report.html --self-contained-html test_user_journey.py"
+                sh "/Users/yijinwang/anaconda3/bin/pytest --html=report.html --self-contained-html test_user_journey.py"
                 archiveArtifacts artifacts: 'report.html', fingerprint: true
             }
         }
@@ -39,7 +39,7 @@ pipeline {
         stage('Performance Testing') {
             steps {
                 echo "Running Locust Performance Tests..."
-                sh "locust -f locustfile.py --headless -u 10 -r 1 --run-time 30s --host http://localhost:5001"
+                sh "/Users/yijinwang/anaconda3/bin/locust -f locustfile.py --headless -u 10 -r 1 --run-time 30s --host http://localhost:5001"
             }
         }
     }

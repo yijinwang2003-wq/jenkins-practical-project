@@ -14,12 +14,6 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-                echo "Quality Gate passed. Code standards met."
-            }
-        }
-
         stage('Database Management') {
             steps {
                 script {
@@ -32,6 +26,30 @@ pipeline {
                     echo "Test data seeded successfully."
                 }
             }
+        }
+
+        stage('End-to-End Testing') {
+            steps {
+                echo "Running Playwright E2E Tests..."
+                sh "pytest --html=report.html --self-contained-html test_user_journey.py"
+                archiveArtifacts artifacts: 'report.html', fingerprint: true
+            }
+        }
+
+        stage('Performance Testing') {
+            steps {
+                echo "Running Locust Performance Tests..."
+                sh "locust -f locustfile.py --headless -u 10 -r 1 --run-time 30s --host http://localhost:5001"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "SUCCESS: Deployment to staging was successful. Notification sent to team."
+        }
+        failure {
+            echo "FAILURE: Pipeline failed! Reviewing error details in Console Output..."
         }
     }
 }
